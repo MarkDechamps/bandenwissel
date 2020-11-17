@@ -1,5 +1,6 @@
 package ch1.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Wheel {
@@ -17,7 +18,14 @@ public class Wheel {
     }
 
 
-    public Date getAttachedDate() {
-        return attached;
+    public boolean isTooOld( ) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR,-3);
+        Date shouldBeReplacedAt = cal.getTime();
+        return shouldBeReplacedAt.compareTo(attached) > 0;
+    }
+
+    public boolean isSummerTire() {
+        return !winterTire;
     }
 }

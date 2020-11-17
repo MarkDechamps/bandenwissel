@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static utils.TestDateUtils.LESS_THAN3_YEARS_AGO;
+import static utils.TestDateUtils.THREE_YEARS_AGO;
 
 
 class FrowningTest {
 
 
     private Car testCar;
-    private final Date THREE_YEARS_AGO = yearsAgo(3,1);
-    private final Date LESS_THAN3_YEARS_AGO = yearsAgo(3,-1);
     private final MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
 
     @BeforeEach
@@ -98,15 +98,17 @@ class FrowningTest {
     private void assertSummer() {
         assertEquals(4, testCar.getWheels().size());
         assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
-        assertEquals(0, testCar.getWheels().stream().map(Wheel::getAttachedDate).filter(this::isTooOld).count());
+        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isTooOld).count());
     }
 
-    private boolean isTooOld(Date date) {
-        return date.getTime()< LESS_THAN3_YEARS_AGO.getTime();
+    private void assertWinter() {
+        assertEquals(4, testCar.getWheels().size());
+        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isSummerTire).count());
+        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isTooOld).count());
     }
 
     @Test
-    public void randomCarFixer(){
+    public void randomSummerCarFixer(){
         IntStream.range(0,100).forEach(i->{
             var g = new CarGenerator();
             testCar = g.generateCar();
@@ -114,15 +116,19 @@ class FrowningTest {
             Frowning.replacement(testDB, "summer");
             assertSummer();
         });
-
+    }
+    @Test
+    public void randomWinterCarFixer(){
+        IntStream.range(0,100).forEach(i->{
+            var g = new CarGenerator();
+            testCar = g.generateCar();
+            when(testDB.getCar()).thenReturn(testCar);
+            Frowning.replacement(testDB, "winter");
+            assertWinter();
+        });
     }
 
-    private Date yearsAgo(int years,int seconds) {
-        Calendar c = Calendar.getInstance();
-        c.add(YEAR,-years);
-        c.add(SECOND,-seconds);
-        return c.getTime();
-    }
+
 
 
 }
