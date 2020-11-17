@@ -13,6 +13,7 @@ public class Frowning {
 
     private static final String WINTER = "winter";
     private static final String SUMMER = "summer";
+    private static final int MAX_WHEELS = 4;
 
     public static void main(String[] args) {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
@@ -28,26 +29,34 @@ public class Frowning {
 
         allWheels.removeAll(oldWheelsFrom(allWheels));
 
-        int add = 4 - allWheels.size();
-
-        List<Wheel> aw = new ArrayList<>();
-        for (int i = 0; i < add; i++) {
-            Wheel w2 = new Wheel(isWinter, new Date());
-            aw.add(w2);
-        }
+        int numberOfWheelsToAdd = MAX_WHEELS - allWheels.size();
+        List<Wheel> wheelsToAdd = createNumberOfWheels(isWinter, numberOfWheelsToAdd);
 
         List<Wheel> torm = new ArrayList<>();
         for (int i = 0; i < allWheels.size(); i++) {
             if ((allWheels.get(i).isWinterTire() && !isWinter) ||
                     (!allWheels.get(i).isWinterTire() && isWinter)) {
                 torm.add(allWheels.get(i));
-                Wheel w2 = new Wheel(isWinter, new Date());
-                aw.add(w2);
+                Wheel w2 = createWheel(isWinter);
+                wheelsToAdd.add(w2);
             }
         }
 
         allWheels.removeAll(torm);
-        allWheels.addAll(aw);
+        allWheels.addAll(wheelsToAdd);
+    }
+
+    private static List<Wheel> createNumberOfWheels(boolean isWinter, int wheelsToAdd) {
+        List<Wheel> aw = new ArrayList<>();
+        for (int i = 0; i < wheelsToAdd; i++) {
+            Wheel w2 = createWheel(isWinter);
+            aw.add(w2);
+        }
+        return aw;
+    }
+
+    private static Wheel createWheel(boolean isWinter) {
+        return new Wheel(isWinter, new Date());
     }
 
     private static List<Wheel> oldWheelsFrom(List<Wheel> w) {
