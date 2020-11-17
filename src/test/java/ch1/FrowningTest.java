@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static java.util.Calendar.SECOND;
 import static java.util.Calendar.YEAR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -24,6 +24,8 @@ class FrowningTest {
 
 
     private Car testCar;
+    private final Date THREE_YEARS_AGO = yearsAgo(3,1);
+    private final Date LESS_THAN3_YEARS_AGO = yearsAgo(3,-1);
 
     @BeforeEach
     public void init(){
@@ -35,12 +37,11 @@ class FrowningTest {
         MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
 
-        Date treeYearsAgo = yearsAgo(3,1);
-        Wheel wheel = new Wheel(true,treeYearsAgo);
+        Wheel wheel = new Wheel(true, THREE_YEARS_AGO);
         List<Wheel> wheels = new ArrayList<>();
         wheels.add(wheel);
         testCar.setWheels(wheels);
-        Frowning.replacement(testDB);
+        Frowning.replacement(testDB, "winter");
 
         assertFalse(testCar.hasWheel(wheel));
     }
@@ -49,18 +50,54 @@ class FrowningTest {
         MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
 
-        Date treeYearsAgo = yearsAgo(3,-1);
-        Wheel wheel = new Wheel(true,treeYearsAgo);
+        Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
         List<Wheel> wheels = new ArrayList<>();
         wheels.add(wheel);
         testCar.setWheels(wheels);
-        Frowning.replacement(testDB);
+        Frowning.replacement(testDB, "winter");
 
         assertTrue(testCar.hasWheel(wheel));
-
     }
 
+    @Test
+    public void shouldHave4WheelsAfterReplacement(){
+        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
+        when(testDB.getCar()).thenReturn(testCar);
+        testCar.setWheels(new ArrayList<>());
+        String winter = "winter";
+        Frowning.replacement(testDB, winter);
+        assertEquals(4, testCar.getWheels().size());
+        assertEquals(4, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
+    }
 
+    @Test
+    public void shouldHaveWrongWheelReplaced(){
+        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
+        when(testDB.getCar()).thenReturn(testCar);
+        ArrayList<Wheel> wheels = new ArrayList<>();
+        Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
+        wheels.add(wheel);
+        testCar.setWheels(wheels);
+        String summer = "summer";
+        Frowning.replacement(testDB, summer);
+        assertEquals(4, testCar.getWheels().size());
+        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
+    }
+
+    @Test
+    public void shouldHave3WrongWheelsReplaced(){
+        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
+        when(testDB.getCar()).thenReturn(testCar);
+        Wheel wheel1 = new Wheel(true, LESS_THAN3_YEARS_AGO);
+        Wheel wheel2 = new Wheel(false, THREE_YEARS_AGO);
+        Wheel wheel3 = new Wheel(true, THREE_YEARS_AGO);
+        List<Wheel> wheels = new ArrayList<>(List.of(wheel1, wheel2, wheel3));
+        testCar.setWheels(wheels);
+        String summer = "summer";
+        Frowning.replacement(testDB, summer);
+        assertEquals(4, testCar.getWheels().size());
+        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
+    }
 
     private Date yearsAgo(int years,int seconds) {
         Calendar c = Calendar.getInstance();
@@ -68,5 +105,6 @@ class FrowningTest {
         c.add(SECOND,-seconds);
         return c.getTime();
     }
+
 
 }
