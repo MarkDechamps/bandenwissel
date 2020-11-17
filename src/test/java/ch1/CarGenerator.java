@@ -28,6 +28,7 @@ public class CarGenerator {
         boolean winter = time % 2 == 1;
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, (int) -(time % 4));
+        calendar.add(Calendar.HOUR, -1);
         return new Wheel(winter, calendar.getTime());
     }
 }

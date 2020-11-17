@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Wheel {
-    private boolean winterTire;
-    private Date attached;
+    private final boolean winterTire;
+    private final Date attached;
 
 
     public Wheel(boolean winterTire, Date attached) {
@@ -22,10 +22,12 @@ public class Wheel {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.YEAR,-3);
         Date shouldBeReplacedAt = cal.getTime();
-        return shouldBeReplacedAt.compareTo(attached) > 0;
+        return attached.before(shouldBeReplacedAt);
     }
 
     public boolean isSummerTire() {
         return !winterTire;
     }
+
+
 }

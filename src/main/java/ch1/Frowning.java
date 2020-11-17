@@ -21,6 +21,7 @@ public class Frowning {
         Car c = db.getCar();
         List<Wheel> w = c.getWheels();
         List<Wheel> rm = new ArrayList<>();
+
         for (int i = 0; i < w.size(); i++) {
             Wheel wheel = w.get(i);
             if (wheel.isTooOld()) {
@@ -28,8 +29,8 @@ public class Frowning {
             }
         }
         w.removeAll(rm);
-
         int add = 4 - w.size();
+
         List<Wheel> aw = new ArrayList<>();
         for (int i = 0; i < add; i++) {
             Wheel w2 = new Wheel("winter".equals(season), new Date());
@@ -49,7 +50,5 @@ public class Frowning {
         w.removeAll(torm);
         w.addAll(aw);
     }
-
-
 }
 

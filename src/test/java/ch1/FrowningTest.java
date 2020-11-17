@@ -9,12 +9,9 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.Calendar.SECOND;
-import static java.util.Calendar.YEAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,8 +27,8 @@ class FrowningTest {
     private final MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
 
     @BeforeEach
-    public void init(){
-        testCar=new Car();
+    public void init() {
+        testCar = new Car();
     }
 
     @Test
@@ -46,6 +43,7 @@ class FrowningTest {
 
         assertFalse(testCar.hasWheel(wheel));
     }
+
     @Test
     public void shouldNotReplaceWhenTireIsLessThan3YearsOld() {
         when(testDB.getCar()).thenReturn(testCar);
@@ -60,7 +58,7 @@ class FrowningTest {
     }
 
     @Test
-    public void shouldHave4WheelsAfterReplacement(){
+    public void shouldHave4WheelsAfterReplacement() {
         when(testDB.getCar()).thenReturn(testCar);
         testCar.setWheels(new ArrayList<>());
         String winter = "winter";
@@ -70,7 +68,7 @@ class FrowningTest {
     }
 
     @Test
-    public void shouldHaveWrongWheelReplaced(){
+    public void shouldHaveWrongWheelReplaced() {
         when(testDB.getCar()).thenReturn(testCar);
         ArrayList<Wheel> wheels = new ArrayList<>();
         Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
@@ -83,7 +81,7 @@ class FrowningTest {
     }
 
     @Test
-    public void shouldHave3WrongWheelsReplaced(){
+    public void shouldHave3WrongWheelsReplaced() {
         when(testDB.getCar()).thenReturn(testCar);
         Wheel wheel1 = new Wheel(true, LESS_THAN3_YEARS_AGO);
         Wheel wheel2 = new Wheel(false, THREE_YEARS_AGO);
@@ -96,20 +94,22 @@ class FrowningTest {
     }
 
     private void assertSummer() {
-        assertEquals(4, testCar.getWheels().size());
-        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
-        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isTooOld).count());
+        List<Wheel> wheels = testCar.getWheels();
+        assertEquals(4, wheels.size());
+        assertEquals(0, wheels.stream().filter(Wheel::isWinterTire).count());
+        assertEquals(0, wheels.stream().filter(Wheel::isTooOld).count());
     }
 
     private void assertWinter() {
-        assertEquals(4, testCar.getWheels().size());
-        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isSummerTire).count());
-        assertEquals(0, testCar.getWheels().stream().filter(Wheel::isTooOld).count());
+        List<Wheel> wheels = testCar.getWheels();
+        assertEquals(4, wheels.size());
+        assertEquals(0, wheels.stream().filter(Wheel::isSummerTire).count());
+        assertEquals(0, wheels.stream().filter(Wheel::isTooOld).count());
     }
 
     @Test
-    public void randomSummerCarFixer(){
-        IntStream.range(0,100).forEach(i->{
+    public void randomSummerCarFixer() {
+        IntStream.range(0, 100).forEach(i -> {
             var g = new CarGenerator();
             testCar = g.generateCar();
             when(testDB.getCar()).thenReturn(testCar);
@@ -117,9 +117,10 @@ class FrowningTest {
             assertSummer();
         });
     }
+
     @Test
-    public void randomWinterCarFixer(){
-        IntStream.range(0,100).forEach(i->{
+    public void randomWinterCarFixer() {
+        IntStream.range(0, 100).forEach(i -> {
             var g = new CarGenerator();
             testCar = g.generateCar();
             when(testDB.getCar()).thenReturn(testCar);
