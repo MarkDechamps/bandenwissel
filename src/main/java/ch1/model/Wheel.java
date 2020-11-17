@@ -16,11 +16,6 @@ public class Wheel {
         return winterTire;
     }
 
-    public void setWinterTire(boolean winterTire) {
-        this.winterTire = winterTire;
-    }
-
-
 
     public Date getAttachedDate() {
         return attached;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.util.Calendar.SECOND;
 import static java.util.Calendar.YEAR;
@@ -26,6 +27,7 @@ class FrowningTest {
     private Car testCar;
     private final Date THREE_YEARS_AGO = yearsAgo(3,1);
     private final Date LESS_THAN3_YEARS_AGO = yearsAgo(3,-1);
+    private final MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
 
     @BeforeEach
     public void init(){
@@ -34,7 +36,6 @@ class FrowningTest {
 
     @Test
     public void shouldReplaceWhenTireIs3YearsOld() {
-        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
 
         Wheel wheel = new Wheel(true, THREE_YEARS_AGO);
@@ -47,7 +48,6 @@ class FrowningTest {
     }
     @Test
     public void shouldNotReplaceWhenTireIsLessThan3YearsOld() {
-        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
 
         Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
@@ -61,7 +61,6 @@ class FrowningTest {
 
     @Test
     public void shouldHave4WheelsAfterReplacement(){
-        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
         testCar.setWheels(new ArrayList<>());
         String winter = "winter";
@@ -72,7 +71,6 @@ class FrowningTest {
 
     @Test
     public void shouldHaveWrongWheelReplaced(){
-        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
         ArrayList<Wheel> wheels = new ArrayList<>();
         Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
@@ -86,7 +84,6 @@ class FrowningTest {
 
     @Test
     public void shouldHave3WrongWheelsReplaced(){
-        MyCarDatabase testDB = Mockito.mock(MyCarDatabase.class);
         when(testDB.getCar()).thenReturn(testCar);
         Wheel wheel1 = new Wheel(true, LESS_THAN3_YEARS_AGO);
         Wheel wheel2 = new Wheel(false, THREE_YEARS_AGO);
@@ -95,8 +92,29 @@ class FrowningTest {
         testCar.setWheels(wheels);
         String summer = "summer";
         Frowning.replacement(testDB, summer);
+        assertSummer();
+    }
+
+    private void assertSummer() {
         assertEquals(4, testCar.getWheels().size());
         assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
+        assertEquals(0, testCar.getWheels().stream().map(Wheel::getAttachedDate).filter(this::isTooOld).count());
+    }
+
+    private boolean isTooOld(Date date) {
+        return date.getTime()< LESS_THAN3_YEARS_AGO.getTime();
+    }
+
+    @Test
+    public void randomCarFixer(){
+        IntStream.range(0,100).forEach(i->{
+            var g = new CarGenerator();
+            testCar = g.generateCar();
+            when(testDB.getCar()).thenReturn(testCar);
+            Frowning.replacement(testDB, "summer");
+            assertSummer();
+        });
+
     }
 
     private Date yearsAgo(int years,int seconds) {
