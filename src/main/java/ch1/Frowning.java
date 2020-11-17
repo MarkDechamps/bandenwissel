@@ -11,13 +11,18 @@ import java.util.List;
 
 public class Frowning {
 
+    private static final String WINTER = "winter";
+    private static final String SUMMER = "summer";
+
     public static void main(String[] args) {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
-        replacement(db, "winter");
-        replacement(db, "summer");
+        replacement(db, WINTER);
+        replacement(db, SUMMER);
     }
 
-    public static void replacement(MyCarDatabase db, String season) {
+    public static void replacement(MyCarDatabase db, final String season) {
+        boolean isWinter = WINTER.equals(season);
+
         Car c = db.getCar();
         List<Wheel> allWheels = c.getWheels();
 
@@ -27,16 +32,16 @@ public class Frowning {
 
         List<Wheel> aw = new ArrayList<>();
         for (int i = 0; i < add; i++) {
-            Wheel w2 = new Wheel("winter".equals(season), new Date());
+            Wheel w2 = new Wheel(isWinter, new Date());
             aw.add(w2);
         }
 
         List<Wheel> torm = new ArrayList<>();
         for (int i = 0; i < allWheels.size(); i++) {
-            if ((allWheels.get(i).isWinterTire() && !"winter".equals(season)) ||
-                    (!allWheels.get(i).isWinterTire() && "winter".equals(season))) {
+            if ((allWheels.get(i).isWinterTire() && !isWinter) ||
+                    (!allWheels.get(i).isWinterTire() && isWinter)) {
                 torm.add(allWheels.get(i));
-                Wheel w2 = new Wheel("winter".equals(season), new Date());
+                Wheel w2 = new Wheel(isWinter, new Date());
                 aw.add(w2);
             }
         }
