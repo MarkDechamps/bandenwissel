@@ -31,7 +31,7 @@ public class Frowning {
 
         car.removeWheelsIf(Wheel::isTooOld);
 
-        int numberOfWheelsToAdd = Car.MAX_WHEELS - allWheels.size();
+        int numberOfWheelsToAdd = car.nrMissingWheels();
         List<Wheel> wheelsToAdd = createWheelsFor(season, numberOfWheelsToAdd);
 
         var toReplace = extractWheelsToReplaceFrom(allWheels, season);

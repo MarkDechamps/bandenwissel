@@ -24,4 +24,8 @@ public class Car {
     public void removeWheelsIf(Predicate<Wheel> condition) {
         wheels.removeIf(condition);
     }
+
+    public int nrMissingWheels() {
+        return Car.MAX_WHEELS - wheels.size();
+    }
 }
