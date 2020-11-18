@@ -3,6 +3,8 @@ package ch1.model;
 import java.util.Calendar;
 import java.util.Date;
 
+import static ch1.model.Season.WINTER;
+
 public class Wheel {
     private final boolean winterTire;
     private final Date attached;
@@ -29,5 +31,7 @@ public class Wheel {
         return !winterTire;
     }
 
-
+    public boolean isInSeason(Season season) {
+        return winterTire == (season == WINTER);
+    }
 }

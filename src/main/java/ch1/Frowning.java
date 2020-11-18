@@ -3,6 +3,7 @@ package ch1;
 
 import ch1.infra.MyCarDatabase;
 import ch1.model.Car;
+import ch1.model.Season;
 import ch1.model.Wheel;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ public class Frowning {
         replacement(db, SUMMER);
     }
 
-    public static void replacement(MyCarDatabase db, final String season) {
-        boolean isWinter = WINTER.equals(season);
+    public static void replacement(MyCarDatabase db, final String seasonParam) {
+        boolean isWinter = WINTER.equals(seasonParam);
+        Season season = Season.forValue(seasonParam);
 
         Car c = db.getCar();
         List<Wheel> allWheels = c.getWheels();
@@ -34,9 +36,9 @@ public class Frowning {
 
         List<Wheel> torm = new ArrayList<>();
         for (int i = 0; i < allWheels.size(); i++) {
-            if ((allWheels.get(i).isWinterTire() && !isWinter) ||
-                    (!allWheels.get(i).isWinterTire() && isWinter)) {
-                torm.add(allWheels.get(i));
+            Wheel wheel = allWheels.get(i);
+            if (!wheel.isInSeason(season)) {
+                torm.add(wheel);
                 Wheel w2 = createWheel(isWinter);
                 wheelsToAdd.add(w2);
             }
