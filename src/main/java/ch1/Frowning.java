@@ -6,7 +6,6 @@ import ch1.model.Car;
 import ch1.model.Season;
 import ch1.model.Wheel;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +15,6 @@ public class Frowning {
 
     private static final String WINTER = "winter";
     private static final String SUMMER = "summer";
-    private static final int MAX_WHEELS = 4;
 
     public static void main(String[] args) {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
@@ -25,36 +23,34 @@ public class Frowning {
     }
 
     public static void replacement(MyCarDatabase db, final String seasonParam) {
-        boolean isWinter = WINTER.equals(seasonParam);
         Season season = Season.forValue(seasonParam);
 
-        Car c = db.getCar();
-        List<Wheel> allWheels = c.getWheels();
+        Car car = db.getCar();
+        List<Wheel> allWheels = car.getWheels();
 
         allWheels.removeAll(oldWheelsFrom(allWheels));
-        int numberOfWheelsToAdd = MAX_WHEELS - allWheels.size();
-        List<Wheel> wheelsToAdd = createNumberOfWheels(isWinter, numberOfWheelsToAdd);
+        int numberOfWheelsToAdd = Car.MAX_WHEELS - allWheels.size();
+        List<Wheel> wheelsToAdd = createWheelsFor(season, numberOfWheelsToAdd);
 
-        var toReplace = wheelsToReplace(season, allWheels);
+        var toReplace = extractWheelsToReplaceFrom(allWheels, season);
         allWheels.removeAll(toReplace);
 
-        wheelsToAdd.addAll(createNumberOfWheels(isWinter, toReplace.size()));
+        wheelsToAdd.addAll(createWheelsFor(season, toReplace.size()));
         allWheels.addAll(wheelsToAdd);
     }
 
-    private static List<Wheel> wheelsToReplace(Season season, List<Wheel> allWheels) {
-        List<Wheel> toReplace = allWheels.stream()
+    private static List<Wheel> extractWheelsToReplaceFrom(List<Wheel> allWheels, Season season) {
+        return allWheels.stream()
                 .filter(wheel -> !wheel.isInSeason(season))
                 .collect(Collectors.toList());
-        return toReplace;
     }
 
-    private static List<Wheel> createNumberOfWheels(boolean isWinter, int wheelsToAdd) {
-        return IntStream.range(0, wheelsToAdd).mapToObj(i -> createWheel(isWinter)).collect(Collectors.toList());
+    private static List<Wheel> createWheelsFor(Season season, int wheelsToAdd) {
+        return IntStream.range(0, wheelsToAdd).mapToObj(i -> createWheel(season)).collect(Collectors.toList());
     }
 
-    private static Wheel createWheel(boolean isWinter) {
-        return new Wheel(isWinter, new Date());
+    private static Wheel createWheel(Season season) {
+        return new Wheel(season==Season.WINTER, new Date());
     }
 
     private static List<Wheel> oldWheelsFrom(List<Wheel> w) {

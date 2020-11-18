@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Car {
+    public static final int MAX_WHEELS = 4;
+
     private List<Wheel> wheels = new ArrayList<>();
 
     public List<Wheel> getWheels() {
