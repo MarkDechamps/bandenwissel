@@ -1,6 +1,5 @@
 package ch1;
 
-
 import ch1.infra.MyCarDatabase;
 import ch1.model.Car;
 import ch1.model.Season;
@@ -28,23 +27,9 @@ public class Frowning {
         Car car = db.getCar();
         List<Wheel> allWheels = car.getWheels();
 
-
         car.removeWheelsIf(Wheel::isTooOld);
-
-       // List<Wheel> wheelsToAdd = createWheelsFor(season, car.nrMissingWheels());
-
-       // var toReplace = extractWheelsToReplaceFrom(allWheels, season);
-        //allWheels.removeAll(toReplace);
         car.removeWheelsIf(wheel->!wheel.isInSeason(season));
-
-        //wheelsToAdd.addAll();
         allWheels.addAll(createWheelsFor(season, car.nrMissingWheels()));
-    }
-
-    private static List<Wheel> extractWheelsToReplaceFrom(List<Wheel> allWheels, Season season) {
-        return allWheels.stream()
-                .filter(wheel -> !wheel.isInSeason(season))
-                .collect(Collectors.toList());
     }
 
     private static List<Wheel> createWheelsFor(Season season, int wheelsToAdd) {
