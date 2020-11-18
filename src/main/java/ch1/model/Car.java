@@ -2,6 +2,7 @@ package ch1.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Car {
     public static final int MAX_WHEELS = 4;
@@ -18,5 +19,9 @@ public class Car {
 
     public boolean hasWheel(Wheel wheel) {
         return wheels.contains(wheel);
+    }
+
+    public void removeWheelsIf(Predicate<Wheel> condition) {
+        wheels.removeIf(condition);
     }
 }

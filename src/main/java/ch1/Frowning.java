@@ -28,7 +28,9 @@ public class Frowning {
         Car car = db.getCar();
         List<Wheel> allWheels = car.getWheels();
 
-        allWheels.removeAll(oldWheelsFrom(allWheels));
+
+        car.removeWheelsIf(Wheel::isTooOld);
+
         int numberOfWheelsToAdd = Car.MAX_WHEELS - allWheels.size();
         List<Wheel> wheelsToAdd = createWheelsFor(season, numberOfWheelsToAdd);
 
@@ -53,8 +55,5 @@ public class Frowning {
         return new Wheel(season==Season.WINTER, new Date());
     }
 
-    private static List<Wheel> oldWheelsFrom(List<Wheel> w) {
-        return w.stream().filter(Wheel::isTooOld).collect(Collectors.toList());
-    }
 }
 
