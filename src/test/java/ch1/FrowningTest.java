@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -30,6 +29,13 @@ class FrowningTest {
     public void init() {
         testCar = new Car();
     }
+
+    @Test
+    public void emptyCar() {
+        MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
+        new Frowning().replacement(db, "winter");
+    }
+
 
     @Test
     public void shouldReplaceWhenTireIs3YearsOld() {
@@ -128,8 +134,6 @@ class FrowningTest {
             assertWinter();
         });
     }
-
-
 
 
 }

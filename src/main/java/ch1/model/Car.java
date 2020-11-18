@@ -1,9 +1,10 @@
 package ch1.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Car {
-    private List<Wheel> wheels;
+    private List<Wheel> wheels = new ArrayList<>();
 
     public List<Wheel> getWheels() {
         return wheels;

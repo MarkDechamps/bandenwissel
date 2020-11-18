@@ -32,17 +32,21 @@ public class Frowning {
         List<Wheel> allWheels = c.getWheels();
 
         allWheels.removeAll(oldWheelsFrom(allWheels));
-
         int numberOfWheelsToAdd = MAX_WHEELS - allWheels.size();
         List<Wheel> wheelsToAdd = createNumberOfWheels(isWinter, numberOfWheelsToAdd);
 
-        List<Wheel> toReplace =allWheels.stream()
-                .filter(wheel -> !wheel.isInSeason(season))
-                .collect(Collectors.toList());
+        var toReplace = wheelsToReplace(season, allWheels);
         allWheels.removeAll(toReplace);
 
         wheelsToAdd.addAll(createNumberOfWheels(isWinter, toReplace.size()));
         allWheels.addAll(wheelsToAdd);
+    }
+
+    private static List<Wheel> wheelsToReplace(Season season, List<Wheel> allWheels) {
+        List<Wheel> toReplace = allWheels.stream()
+                .filter(wheel -> !wheel.isInSeason(season))
+                .collect(Collectors.toList());
+        return toReplace;
     }
 
     private static List<Wheel> createNumberOfWheels(boolean isWinter, int wheelsToAdd) {
