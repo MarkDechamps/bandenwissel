@@ -12,7 +12,10 @@ public class Wheel {
 
     public Wheel(boolean winterTire, Date attached) {
         this.winterTire = winterTire;
-        this.attached= attached;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(attached);
+        cal.clear(Calendar.MILLISECOND);
+        this.attached= cal.getTime();
     }
 
     public boolean isWinterTire() {
@@ -23,6 +26,7 @@ public class Wheel {
     public boolean isTooOld( ) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.YEAR,-3);
+        cal.clear(Calendar.MILLISECOND);
         Date shouldBeReplacedAt = cal.getTime();
         return attached.before(shouldBeReplacedAt);
     }
