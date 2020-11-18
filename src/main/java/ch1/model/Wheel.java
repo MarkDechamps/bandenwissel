@@ -1,5 +1,6 @@
 package ch1.model;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,6 +17,15 @@ public class Wheel {
         cal.setTime(attached);
         cal.clear(Calendar.MILLISECOND);
         this.attached= cal.getTime();
+    }
+
+    private Wheel(Builder builder) {
+        winterTire = builder.winterTire;
+        attached = builder.attached;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     public boolean isWinterTire() {
@@ -37,5 +47,28 @@ public class Wheel {
 
     public boolean isInSeason(Season season) {
         return winterTire == (season == WINTER);
+    }
+
+
+    public static final class Builder {
+        private boolean winterTire;
+        private Date attached;
+
+        private Builder() {
+        }
+
+        public Builder inSeason(Season val) {
+            winterTire = val ==WINTER;
+            return this;
+        }
+
+        public Builder withAttachedAt(Date val) {
+            attached = val;
+            return this;
+        }
+
+        public Wheel build() {
+            return new Wheel(this);
+        }
     }
 }

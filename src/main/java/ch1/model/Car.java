@@ -28,4 +28,8 @@ public class Car {
     public int nrMissingWheels() {
         return Car.MAX_WHEELS - wheels.size();
     }
+
+    public void addWheels(List<Wheel> wheelsToAdd) {
+        wheels.addAll(wheelsToAdd);
+    }
 }

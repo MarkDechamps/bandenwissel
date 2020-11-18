@@ -7,32 +7,37 @@ import ch1.model.Wheel;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static ch1.model.Season.WINTER;
+import static java.util.stream.Collectors.toList;
 
 public class Frowning {
 
     public static void main(String[] args) {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
-        replacement(db, Season.WINTER);
+        replacement(db, WINTER);
         replacement(db, Season.SUMMER);
     }
 
     public static void replacement(MyCarDatabase db, Season season) {
         Car car = db.getCar();
-        List<Wheel> allWheels = car.getWheels();
-
         car.removeWheelsIf(Wheel::isTooOld);
-        car.removeWheelsIf(wheel->!wheel.isInSeason(season));
-        allWheels.addAll(createWheelsFor(season, car.nrMissingWheels()));
+        car.removeWheelsIf(wheel -> !wheel.isInSeason(season));
+        car.addWheels(createWheelsFor(season, car.nrMissingWheels()));
     }
 
     private static List<Wheel> createWheelsFor(Season season, int wheelsToAdd) {
-        return IntStream.range(0, wheelsToAdd).mapToObj(i -> createWheel(season)).collect(Collectors.toList());
+        return IntStream.range(0, wheelsToAdd)
+                .mapToObj(i -> createWheel(season))
+                .collect(toList());
     }
 
     private static Wheel createWheel(Season season) {
-        return new Wheel(season==Season.WINTER, new Date());
+        return Wheel.newBuilder()
+                .inSeason(season)
+                .withAttachedAt(new Date())
+                .build();
     }
 
 }
