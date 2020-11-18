@@ -9,6 +9,8 @@ import ch1.model.Wheel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Frowning {
 
@@ -34,27 +36,20 @@ public class Frowning {
         int numberOfWheelsToAdd = MAX_WHEELS - allWheels.size();
         List<Wheel> wheelsToAdd = createNumberOfWheels(isWinter, numberOfWheelsToAdd);
 
-        List<Wheel> torm = new ArrayList<>();
-        for (int i = 0; i < allWheels.size(); i++) {
-            Wheel wheel = allWheels.get(i);
-            if (!wheel.isInSeason(season)) {
-                torm.add(wheel);
-                Wheel w2 = createWheel(isWinter);
-                wheelsToAdd.add(w2);
-            }
-        }
+        List<Wheel> toReplace = new ArrayList<>();
+        allWheels.stream()
+                .filter(wheel -> !wheel.isInSeason(season))
+                .forEach(wheel -> {
+                    toReplace.add(wheel);
+                    wheelsToAdd.add(createWheel(isWinter));
+                });
 
-        allWheels.removeAll(torm);
+        allWheels.removeAll(toReplace);
         allWheels.addAll(wheelsToAdd);
     }
 
     private static List<Wheel> createNumberOfWheels(boolean isWinter, int wheelsToAdd) {
-        List<Wheel> aw = new ArrayList<>();
-        for (int i = 0; i < wheelsToAdd; i++) {
-            Wheel w2 = createWheel(isWinter);
-            aw.add(w2);
-        }
-        return aw;
+        return IntStream.range(0, wheelsToAdd).mapToObj(i -> createWheel(isWinter)).collect(Collectors.toList());
     }
 
     private static Wheel createWheel(boolean isWinter) {
@@ -63,8 +58,7 @@ public class Frowning {
 
     private static List<Wheel> oldWheelsFrom(List<Wheel> w) {
         List<Wheel> rm = new ArrayList<>();
-        for (int i = 0; i < w.size(); i++) {
-            Wheel wheel = w.get(i);
+        for (Wheel wheel : w) {
             if (wheel.isTooOld()) {
                 rm.add(wheel);
             }
