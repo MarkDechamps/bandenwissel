@@ -12,18 +12,13 @@ import java.util.stream.IntStream;
 
 public class Frowning {
 
-    private static final String WINTER = "winter";
-    private static final String SUMMER = "summer";
-
     public static void main(String[] args) {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
-        replacement(db, WINTER);
-        replacement(db, SUMMER);
+        replacement(db, Season.WINTER);
+        replacement(db, Season.SUMMER);
     }
 
-    public static void replacement(MyCarDatabase db, final String seasonParam) {
-        Season season = Season.forValue(seasonParam);
-
+    public static void replacement(MyCarDatabase db, Season season) {
         Car car = db.getCar();
         List<Wheel> allWheels = car.getWheels();
 

@@ -2,6 +2,7 @@ package ch1;
 
 import ch1.infra.MyCarDatabase;
 import ch1.model.Car;
+import ch1.model.Season;
 import ch1.model.Wheel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static ch1.model.Season.SUMMER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +35,7 @@ class FrowningTest {
     @Test
     public void emptyCar() {
         MyCarDatabase db = new MyCarDatabase(); // assume this connects to a database..
-        new Frowning().replacement(db, "winter");
+        Frowning.replacement(db, Season.WINTER);
     }
 
 
@@ -45,7 +47,7 @@ class FrowningTest {
         List<Wheel> wheels = new ArrayList<>();
         wheels.add(wheel);
         testCar.setWheels(wheels);
-        Frowning.replacement(testDB, "winter");
+        Frowning.replacement(testDB, Season.WINTER);
 
         assertFalse(testCar.hasWheel(wheel));
     }
@@ -58,7 +60,7 @@ class FrowningTest {
         List<Wheel> wheels = new ArrayList<>();
         wheels.add(wheel);
         testCar.setWheels(wheels);
-        Frowning.replacement(testDB, "winter");
+        Frowning.replacement(testDB, Season.WINTER);
 
         assertTrue(testCar.hasWheel(wheel));
     }
@@ -67,8 +69,7 @@ class FrowningTest {
     public void shouldHave4WheelsAfterReplacement() {
         when(testDB.getCar()).thenReturn(testCar);
         testCar.setWheels(new ArrayList<>());
-        String winter = "winter";
-        Frowning.replacement(testDB, winter);
+        Frowning.replacement(testDB, Season.WINTER);
         assertEquals(4, testCar.getWheels().size());
         assertEquals(4, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
     }
@@ -80,8 +81,7 @@ class FrowningTest {
         Wheel wheel = new Wheel(true, LESS_THAN3_YEARS_AGO);
         wheels.add(wheel);
         testCar.setWheels(wheels);
-        String summer = "summer";
-        Frowning.replacement(testDB, summer);
+        Frowning.replacement(testDB, SUMMER);
         assertEquals(4, testCar.getWheels().size());
         assertEquals(0, testCar.getWheels().stream().filter(Wheel::isWinterTire).count());
     }
@@ -94,8 +94,8 @@ class FrowningTest {
         Wheel wheel3 = new Wheel(true, THREE_YEARS_AGO);
         List<Wheel> wheels = new ArrayList<>(List.of(wheel1, wheel2, wheel3));
         testCar.setWheels(wheels);
-        String summer = "summer";
-        Frowning.replacement(testDB, summer);
+
+        Frowning.replacement(testDB, SUMMER);
         assertSummer();
     }
 
@@ -119,7 +119,7 @@ class FrowningTest {
             var g = new CarGenerator();
             testCar = g.generateCar();
             when(testDB.getCar()).thenReturn(testCar);
-            Frowning.replacement(testDB, "summer");
+            Frowning.replacement(testDB, SUMMER);
             assertSummer();
         });
     }
@@ -130,7 +130,7 @@ class FrowningTest {
             var g = new CarGenerator();
             testCar = g.generateCar();
             when(testDB.getCar()).thenReturn(testCar);
-            Frowning.replacement(testDB, "winter");
+            Frowning.replacement(testDB, Season.WINTER);
             assertWinter();
         });
     }
