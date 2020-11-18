@@ -36,15 +36,12 @@ public class Frowning {
         int numberOfWheelsToAdd = MAX_WHEELS - allWheels.size();
         List<Wheel> wheelsToAdd = createNumberOfWheels(isWinter, numberOfWheelsToAdd);
 
-        List<Wheel> toReplace = new ArrayList<>();
-        allWheels.stream()
+        List<Wheel> toReplace =allWheels.stream()
                 .filter(wheel -> !wheel.isInSeason(season))
-                .forEach(wheel -> {
-                    toReplace.add(wheel);
-                    wheelsToAdd.add(createWheel(isWinter));
-                });
-
+                .collect(Collectors.toList());
         allWheels.removeAll(toReplace);
+
+        wheelsToAdd.addAll(createNumberOfWheels(isWinter, toReplace.size()));
         allWheels.addAll(wheelsToAdd);
     }
 
@@ -57,13 +54,7 @@ public class Frowning {
     }
 
     private static List<Wheel> oldWheelsFrom(List<Wheel> w) {
-        List<Wheel> rm = new ArrayList<>();
-        for (Wheel wheel : w) {
-            if (wheel.isTooOld()) {
-                rm.add(wheel);
-            }
-        }
-        return rm;
+        return w.stream().filter(Wheel::isTooOld).collect(Collectors.toList());
     }
 }
 
